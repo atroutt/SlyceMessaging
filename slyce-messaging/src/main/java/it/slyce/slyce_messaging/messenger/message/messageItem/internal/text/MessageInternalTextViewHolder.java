@@ -1,4 +1,4 @@
-package it.slyce.slyce_messaging.messenger.message.messageItem.user.text;
+package it.slyce.slyce_messaging.messenger.message.messageItem.internal.text;
 
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -15,9 +15,9 @@ import it.slyce.slyce_messaging.messenger.message.messageItem.master.text.Messag
 /**
  * Created by John C. Hunchar on 5/12/16.
  */
-public class MessageUserTextViewHolder extends MessageTextViewHolder {
+public class MessageInternalTextViewHolder extends MessageTextViewHolder {
 
-    public MessageUserTextViewHolder(View itemView, CustomSettings customSettings) {
+    public MessageInternalTextViewHolder(View itemView, CustomSettings customSettings) {
         super(itemView, customSettings);
 
         avatar = (ImageView) itemView.findViewById(R.id.message_user_text_image_view_avatar);

@@ -1,4 +1,4 @@
-package it.slyce.slyce_messaging.messenger.message.messageItem.scout.text;
+package it.slyce.slyce_messaging.messenger.message.messageItem.external.text;
 
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -15,9 +15,9 @@ import it.slyce.slyce_messaging.messenger.message.messageItem.master.text.Messag
 /**
  * Created by John C. Hunchar on 5/12/16.
  */
-public class MessageScoutTextViewHolder extends MessageTextViewHolder {
+public class MessageExternalTextViewHolder extends MessageTextViewHolder {
 
-    public MessageScoutTextViewHolder(View itemView, final CustomSettings customSettings) {
+    public MessageExternalTextViewHolder(View itemView, final CustomSettings customSettings) {
         super(itemView, customSettings);
 
         avatar = (ImageView) itemView.findViewById(R.id.message_scout_text_image_view_avatar);

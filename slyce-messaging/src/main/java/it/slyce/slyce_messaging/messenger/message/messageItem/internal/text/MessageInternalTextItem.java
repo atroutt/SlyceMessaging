@@ -1,4 +1,4 @@
-package it.slyce.slyce_messaging.messenger.message.messageItem.scout.text;
+package it.slyce.slyce_messaging.messenger.message.messageItem.internal.text;
 
 import android.content.Context;
 
@@ -8,9 +8,9 @@ import it.slyce.slyce_messaging.messenger.message.messageItem.master.text.Messag
 /**
  * Created by John C. Hunchar on 5/12/16.
  */
-public class MessageScoutTextItem extends MessageTextItem {
+public class MessageInternalTextItem extends MessageTextItem {
 
-    public MessageScoutTextItem (TextMessage messageText, Context context) {
+    public MessageInternalTextItem(TextMessage messageText, Context context) {
         super(messageText, context);
     }
 }

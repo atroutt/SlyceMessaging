@@ -1,4 +1,4 @@
-package it.slyce.slyce_messaging.messenger.message.messageItem.user.text;
+package it.slyce.slyce_messaging.messenger.message.messageItem.external.text;
 
 import android.content.Context;
 
@@ -8,9 +8,9 @@ import it.slyce.slyce_messaging.messenger.message.messageItem.master.text.Messag
 /**
  * Created by John C. Hunchar on 5/12/16.
  */
-public class MessageUserTextItem extends MessageTextItem {
+public class MessageExternalTextItem extends MessageTextItem {
 
-    public MessageUserTextItem (TextMessage messageText, Context context) {
+    public MessageExternalTextItem(TextMessage messageText, Context context) {
         super(messageText, context);
     }
 }

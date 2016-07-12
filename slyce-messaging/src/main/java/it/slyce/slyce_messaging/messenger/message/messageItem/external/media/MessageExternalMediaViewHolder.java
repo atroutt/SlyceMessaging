@@ -1,4 +1,4 @@
-package it.slyce.slyce_messaging.messenger.message.messageItem.scout.media;
+package it.slyce.slyce_messaging.messenger.message.messageItem.external.media;
 
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,9 +13,9 @@ import it.slyce.slyce_messaging.view.image.PicassoRoundedImageView;
 /**
  * Created by John C. Hunchar on 5/16/16.
  */
-public class MessageScoutMediaViewHolder extends MessageMediaViewHolder {
+public class MessageExternalMediaViewHolder extends MessageMediaViewHolder {
 
-    public MessageScoutMediaViewHolder(View itemView, CustomSettings customSettings) {
+    public MessageExternalMediaViewHolder(View itemView, CustomSettings customSettings) {
         super(itemView, customSettings);
 
         this.avatarContainer = (ViewGroup) itemView.findViewById(R.id.message_scout_media_image_view_avatar_group);

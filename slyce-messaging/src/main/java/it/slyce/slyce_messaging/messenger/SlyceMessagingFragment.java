@@ -77,6 +77,7 @@ public class SlyceMessagingFragment extends Fragment implements
     private View rootView;
 
     private boolean moreMessagesExist;
+    private boolean isGroupChat;
     private ShouldLoadMoreMessagesListener shouldLoadMoreMessagesListener;
 
     private int startHereWhenUpdate;
@@ -92,6 +93,11 @@ public class SlyceMessagingFragment extends Fragment implements
                     imageView.setVisibility(bool ? View.VISIBLE : View.GONE);
                 }
             });
+    }
+
+    public void setIsGroupchat(final boolean bool) {
+        this.isGroupChat = bool;
+        this.customSettings.isGroupChat = bool;
     }
 
     private void addSpinner() {
