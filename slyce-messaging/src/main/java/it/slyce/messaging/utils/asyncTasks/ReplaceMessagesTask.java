@@ -11,10 +11,6 @@ import it.slyce.messaging.message.messageItem.MessageRecyclerAdapter;
 import it.slyce.messaging.utils.MessageUtils;
 import it.slyce.messaging.utils.Refresher;
 
-/**
- * @Author Matthew Page
- * @Date 7/13/16
- */
 public class ReplaceMessagesTask extends AsyncTask {
     private List<Message> mMessages;
     private List<MessageItem> mMessageItems;
@@ -65,8 +61,10 @@ public class ReplaceMessagesTask extends AsyncTask {
             return;
         }
 
+
         if (upTo >= 0 && upTo < mMessageItems.size()) {
             mRecyclerAdapter.notifyItemRangeInserted(0, upTo);
+            mRecyclerAdapter.notifyItemChanged(upTo);
         } else {
             mRecyclerAdapter.notifyDataSetChanged();
         }

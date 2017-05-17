@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -98,8 +99,11 @@ public class SlyceMessagingFragment extends Fragment implements OnClickListener 
     }
 
     private void removeSpinner() {
-        mMessages.remove(0);
-        replaceMessages(mMessages, -1);
+        if (mMessages.get(0) instanceof SpinnerMessage) {
+            mMessages.remove(0);
+            mMessageItems.remove(0);
+            mRecyclerAdapter.notifyItemRemoved(0);
+        }
     }
 
     public void setMoreMessagesExist(boolean moreMessagesExist) {
@@ -186,7 +190,20 @@ public class SlyceMessagingFragment extends Fragment implements OnClickListener 
         mMessages = new ArrayList<>();
         mMessageItems = new ArrayList<>();
         mRecyclerAdapter = new MessageRecyclerAdapter(mMessageItems, customSettings);
-        mLinearLayoutManager = new LinearLayoutManager(this.getActivity().getApplicationContext());
+        mLinearLayoutManager = new LinearLayoutManager(this.getActivity().getApplicationContext()){
+            @Override
+            public boolean canScrollVertically() {
+                return !mRefresher.isRefreshing();
+            }
+
+            @Override
+            public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
+                try {
+                    super.onLayoutChildren(recycler, state);
+                } catch (IndexOutOfBoundsException e) {
+                }
+            }
+        };
         mLinearLayoutManager.setStackFromEnd(true);
 
         // Setup recycler view
@@ -228,14 +245,14 @@ public class SlyceMessagingFragment extends Fragment implements OnClickListener 
                     try {
                         MessageItem messageItem = mMessageItems.get(i);
                         Message message = messageItem.getMessage();
-                        if (DateUtils.dateNeedsUpdated(message.getDate(), messageItem.getDate())) {
-                            messageItem.updateDate(message.getDate());
+                        if (DateUtils.dateNeedsUpdated(getActivity(), message.getDate(), messageItem.getDate())) {
+                            messageItem.updateDate(getActivity(), message.getDate());
                             updateTimestampAtValue(i);
                         } else if (i == startHereWhenUpdate) {
                             i++;
                         }
                     } catch (RuntimeException exception) {
-                        System.out.println(exception);
+                        Log.d("debug", exception.getMessage());
                         exception.printStackTrace();
                     }
                 }
@@ -269,19 +286,44 @@ public class SlyceMessagingFragment extends Fragment implements OnClickListener 
     }
 
     private void loadMoreMessages() {
-        if (moreMessagesExist && mMessages.get(0) instanceof SpinnerMessage) {
-            mMessages.remove(0);
-        }
-        List<Message> messages = loadMoreMessagesListener.loadMoreMessages();
-        int upTo = messages.size();
-        for (int i = messages.size() - 1; i >= 0; i--) {
-            Message message = messages.get(i);
-            mMessages.add(0, message);
-        }
-        // FIXME
-        // if (moreMessagesExist)
-        //     mMessages.add(0, new SpinnerMessage());
-        replaceMessages(mMessages, upTo);
+        new AsyncTask<Void, Void, Void>() {
+            private boolean spinnerExists;
+            private List<Message> messages;
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                mRefresher.setIsRefreshing(true);
+                spinnerExists = moreMessagesExist && mMessages.get(0) instanceof SpinnerMessage;
+                if (spinnerExists) {
+                    mMessages.remove(0);
+                }
+            }
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+                messages = loadMoreMessagesListener.loadMoreMessages();
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                int upTo = messages.size();
+                for (int i = messages.size() - 1; i >= 0; i--) {
+                    Message message = messages.get(i);
+                    mMessages.add(0, message);
+                }
+                if (spinnerExists && moreMessagesExist)
+                    mMessages.add(0, new SpinnerMessage());
+                mRefresher.setIsRefreshing(false);
+                replaceMessages(mMessages, upTo);
+            }
+        }.execute();
+    }
+
+    public void replaceMessages(List<Message> messages) {
+        replaceMessages(messages, -1);
     }
 
     private void replaceMessages(List<Message> messages, int upTo) {
@@ -301,12 +343,14 @@ public class SlyceMessagingFragment extends Fragment implements OnClickListener 
     }
 
     private void updateTimestampAtValue(final int i) {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mRecyclerAdapter.notifyItemChanged(i);
-            }
-        });
+        if (getActivity() != null) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mRecyclerAdapter.notifyItemChanged(i);
+                }
+            });
+        }
     }
 
     private File file;
@@ -318,11 +362,12 @@ public class SlyceMessagingFragment extends Fragment implements OnClickListener 
             sendUserTextMessage();
         } else if (v.getId() == R.id.slyce_messaging_image_view_snap) {
             mEntryField.setText("");
-            final File root = new File(Environment.getExternalStorageDirectory() + File.separator + "SlyceMessaging" + File.separator);
+            final File mediaStorageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+            final File root = new File(mediaStorageDir, "SlyceMessaging");
             root.mkdirs();
             final String fname = "img_" + System.currentTimeMillis() + ".jpg";
-            this.file = new File(root, fname);
-            outputFileUri = Uri.fromFile(this.file);
+            file = new File(root, fname);
+            outputFileUri = Uri.fromFile(file);
             Intent takePhotoIntent = new CameraActivity.IntentBuilder(getActivity().getApplicationContext())
                     .skipConfirm()
                     .to(this.file)
@@ -336,7 +381,7 @@ public class SlyceMessagingFragment extends Fragment implements OnClickListener 
             try {
                 startActivityForResult(chooserIntent, 1);
             } catch (RuntimeException exception) {
-                System.out.println(exception);
+                Log.d("debug", exception.getMessage());
                 exception.printStackTrace();
             }
         }

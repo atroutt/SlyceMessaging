@@ -1,8 +1,9 @@
 # Slyce Messaging API
 
-![](https://circleci.com/gh/snipsnap/SlyceMessaging.svg?style=shield&circle-token=46075f470208f71a4836c234126bb773c51219d8)
+![](https://circleci.com/gh/snipsnap/SlyceMessaging.svg?style=shield&circle-token=46075f470208f71a4836c234126bb773c51219d8) [![](https://jitpack.io/v/Slyce-Inc/SlyceMessaging.svg)](https://jitpack.io/#Slyce-Inc/SlyceMessaging)
 
-![](https://github.com/snipsnap/SlyceMessaging/blob/master/ExamplePhoto.png?raw=true | width=100)
+
+![](sample-photos/example.png?raw=true) ![](sample-photos/chat-with-image.png?raw=true)
 
 Basic features of the API:
 
@@ -16,25 +17,17 @@ Basic features of the API:
 
 ## Installation
 
-Download the [arr file](https://github.com/snipsnap/SlyceMessaging/releases/download/1.0.2/slyce-messaging.aar). In your project do File -> New -> New Module. Select "Import .JAR/.AAR Package". Select the file you downloaded and give the subproject any name you want, and click "finish".
-
-Now do File -> Project Structure. On the left hand side, at the bottom, select your app's module. Under the "dependencies" tab, add a module dependency to the module you created above.
-
-If you get compilation or runtime errors, try adding the following to your app's gradle file:
+Add the following to your app's gradle file:
 
 ```ruby
 repositories {
-    maven {
-        url "https://s3.amazonaws.com/repo.commonsware.com"
-    }
+    jcenter()
+    maven { url "https://s3.amazonaws.com/repo.commonsware.com" }
+    maven { url "https://jitpack.io" }
 }
 
 dependencies {
-    compile 'com.android.support:design:23.2.1'
-    compile 'com.makeramen:roundedimageview:2.2.1'
-    compile 'de.hdodenhof:circleimageview:2.0.0'
-    compile 'com.github.bumptech.glide:glide:3.7.0'
-    compile 'com.commonsware.cwac:cam2:0.6.2'
+    compile 'com.github.Slyce-Inc:SlyceMessaging:1.1.2'
 }
 ```
 
@@ -104,6 +97,26 @@ public interface UserClicksAvatarPictureListener {
 
 public interface LoadMoreMessagesListener {
     public List<Message> loadMoreMessages();
+}
+```
+
+### General Messages
+We now allow for messages to enter the feed that come from the app itself rather than one of the users. This message can also contain a sequence of options.
+
+```java
+public class GeneralTextMessage extends Message {
+    public void setText(String text);
+}
+
+public class GeneralOptionsMessage extends Message {
+    public void setTitle(String title);
+    public void setOptions(String[] options);
+    public void setOnOptionSelectedListener(OnOptionSelectedListener onOptionSelectedListener);
+}
+
+public interface OnOptionSelectedListener {
+    String onOptionSelected(int optionSelected); 
+            // Returns the string that should replace the title text after the options are removed.
 }
 ```
 
@@ -207,6 +220,11 @@ public class MainActivity extends AppCompatActivity {
     <item name="snackbarButtonColor">@color/text_blue</item>
 </style>
 ```
+## Inspired by JSQMessagesViewController
+
+This library was inspired by [JSQMessagesViewController](https://github.com/jessesquires/JSQMessagesViewController), an excellent messages UI library for iOS.
+
+Stay tuned -- we are joining forces with JSQ for the next generation of messages UI libraries: MessageKit for iOS AND Android! https://github.com/MessageKit/MessageKit-Android
 
 ## Developers
 

@@ -6,10 +6,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-/**
- * @Author Matthew Page
- * @Date 7/13/16
- */
 public class ScrollUtils {
     private static final int SMOOTH_SCROLL_IF_THIS_MUCH = 100000;
 
@@ -26,9 +22,9 @@ public class ScrollUtils {
         scheduleTaskExecutor.schedule(new Runnable() {
             @Override
             public void run() {
-                scrollToPosition(position, mRecyclerView, mRecyclerAdapter);
+                scrollToPosition(position+1, mRecyclerView, mRecyclerAdapter);
             }
-        }, 100, TimeUnit.MILLISECONDS);
+        }, 150, TimeUnit.MILLISECONDS);
     }
 
     public static void scrollToPosition(int position, RecyclerView mRecyclerView, RecyclerView.Adapter mRecyclerAdapter) {
