@@ -20,15 +20,7 @@ Basic features of the API:
 Add the following to your app's gradle file:
 
 ```ruby
-repositories {
-    jcenter()
-    maven { url "https://s3.amazonaws.com/repo.commonsware.com" }
-    maven { url "https://jitpack.io" }
-}
-
-dependencies {
-    compile 'com.github.Slyce-Inc:SlyceMessaging:1.1.2'
-}
+TODO
 ```
 
 ## The API
